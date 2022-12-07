@@ -12,25 +12,25 @@
 #}
 
 <main>
-    <h1>Tomato</h1>
+    <h1>{{plant.name}}</h1>
 
-    <img src="https://www.almanac.com/sites/default/files/styles/primary_image_in_article/public/image_nodes/tomatoes_helios4eos_gettyimages-edit.jpeg?itok=4KrW14a4">
+    <img src="{{plant.photo_url}}">
 
     <section id="info">
         <h3>Info</h3>
 
         <strong>Date Planted</strong>
-        3/20/2020
+        {{plant.date_planted}}
         <br><br>
 
         <strong>Variety</strong>
         Early Girl
         <br><br>
 
-        <a class="nav" href="/edit/123456">Edit Plant</a><br><br>
+        <a class="nav" href="/edit/{{plant._id}}">Edit Plant</a><br><br>
     </section>
 
-    <form action="/harvest/123456" method="POST">
+    <form action="/harvest/{{plant._id}}" method="POST">
         <fieldset>
             <legend>Harvested:</legend>
             
@@ -41,7 +41,7 @@
 
             <label>
                 Date harvested
-                <input type="date" name="date_planted">
+                <input type="date" name="date_harvested">
             </label>
 
             <input type="submit" class="submit" value="Harvest!">
@@ -61,7 +61,7 @@
         </ul>
     </section>
 
-    <form action="/delete/123456" method='POST' id="delete-form" onsubmit="return confirm_delete()">
+    <form action="/delete/{{plant._id}}" method='POST' id="delete-form" onsubmit="return confirm_delete()">
         <input type="submit" class="nav" onclick="delete_modal()" value="Delete Plant">
     </form>
 </main>
