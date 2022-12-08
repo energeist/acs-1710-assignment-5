@@ -117,7 +117,7 @@ def edit(plant_id):
 @app.route('/delete/<plant_id>', methods=['POST'])
 def delete(plant_id):
     """
-    Deletes an item and any associated harvests.
+    Accepts a POST request to delete an item and any associated harvests from the database.
     """
     plants.delete_one({"_id": ObjectId(plant_id)})
     harvests.delete_many({"_id": ObjectId(plant_id)})
