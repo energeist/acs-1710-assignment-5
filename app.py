@@ -20,10 +20,10 @@ harvests = db.harvests
 
 @app.route('/')
 def plants_list():
-    """Display the plants list page."""
+    """
+    Display the plants list page.
+    """
 
-    # TODO: Replace the following line with a database call to retrieve *all*
-    # plants from the Mongo database's `plants` collection.
     plants_data = plants.find()
     context = {
         'plants': plants_data,
@@ -38,10 +38,11 @@ def about():
 
 @app.route('/create', methods=['GET', 'POST'])
 def create():
-    """Display the plant creation page & process data from the creation form."""
+    """
+    Display the plant creation page & process data from the creation form.
+    """
     if request.method == 'POST':
-        # TODO: Get the new plant's name, variety, photo, & date planted, and 
-        # store them in the object below.
+
         new_plant = {
             'name': request.form['plant_name'],
             'variety': request.form['variety'],
@@ -51,7 +52,6 @@ def create():
 
         new_plant_id = plants.insert_one(new_plant).inserted_id # captures response to get inserted objectId
 
-        print(new_plant_id)
         return redirect(url_for('detail', plant_id=new_plant_id))
 
     else:
@@ -59,17 +59,11 @@ def create():
 
 @app.route('/plant/<plant_id>')
 def detail(plant_id):
-    """Display the plant detail page & process data from the harvest form."""
+    """
+    Display the plant detail page & process data from the harvest form.
+    """
 
-    # TODO: Replace the following line with a database call to retrieve *one*
-    # plant from the database, whose id matches the id passed in via the URL.
-
-    # TODO: Use the `find` database operation to find all harvests for the
-    # plant's id.
-    # HINT: This query should be on the `harvests` collection, not the `plants`
-    # collection.
     plant_to_show = plants.find_one({'_id': ObjectId(plant_id)})
-    print(plant_to_show)
     find_all_harvests = harvests.find()
 
     context = {
@@ -84,16 +78,11 @@ def harvest(plant_id):
     Accepts a POST request with data for 1 harvest and inserts into database.
     """
 
-    # TODO: Create a new harvest object by passing in the form data from the
-    # detail page form.
     new_harvest = {
-        'quantity': request.form['harvested_amount'], # e.g. '3 tomatoes'
+        'quantity': request.form['harvested_amount'],
         'date': request.form['date_harvested'],
         'plant_id': plant_id
     }
-
-    # TODO: Make an `insert_one` database call to insert the object into the 
-    # `harvests` collection of the database.
 
     harvests.insert_one(new_harvest)
 
@@ -101,11 +90,10 @@ def harvest(plant_id):
 
 @app.route('/edit/<plant_id>', methods=['GET', 'POST'])
 def edit(plant_id):
-    """Shows the edit page and accepts a POST request with edited data."""
+    """
+    Shows the edit page and accepts a POST request with edited data.
+    """
     if request.method == 'POST':
-        # TODO: Make an `update_one` database call to update the plant with the
-        # given id. Make sure to put the updated fields in the `$set` object.
-        
         new_plant_details = {
             'name': request.form['plant_name'],
             'variety': request.form['variety'],
@@ -116,9 +104,8 @@ def edit(plant_id):
         plants.update_one({"_id": ObjectId(plant_id)}, {'$set':new_plant_details})
         
         return redirect(url_for('detail', plant_id=plant_id))
+
     else:
-        # TODO: Make a `find_one` database call to get the plant object with the
-        # passed-in _id.
         plant_to_show = plants.find_one({"_id": ObjectId(plant_id)})
 
         context = {
@@ -129,16 +116,13 @@ def edit(plant_id):
 
 @app.route('/delete/<plant_id>', methods=['POST'])
 def delete(plant_id):
-    # TODO: Make a `delete_one` database call to delete the plant with the given
-    # id.
+    """
+    Deletes an item and any associated harvests.
+    """
     plants.delete_one({"_id": ObjectId(plant_id)})
-
-    # TODO: Also, make a `delete_many` database call to delete all harvests with
-    # the given plant id.
-    delete_harvests = harvests.find({"plant_id": plant_id})
-    harvests.delete_many(delete_harvests)
+    harvests.delete_many({"_id": ObjectId(plant_id)})
     return redirect(url_for('plants_list'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=3000)
 
