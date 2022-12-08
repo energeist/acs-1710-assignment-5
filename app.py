@@ -23,7 +23,7 @@ def plants_list():
     """
     Display the plants list page.
     """
-
+    
     plants_data = plants.find()
     context = {
         'plants': plants_data,
@@ -33,7 +33,9 @@ def plants_list():
 
 @app.route('/about')
 def about():
-    """Display the about page."""
+    """
+    Display the about page.
+    """
     return render_template('about.html')
 
 @app.route('/create', methods=['GET', 'POST'])
